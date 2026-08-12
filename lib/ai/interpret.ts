@@ -75,13 +75,18 @@ function extractCurrencyValues(text: string): number[] {
 
   let match: RegExpExecArray | null;
 
-  while ((match = currencyRegex.exec(text)) !== null) {
-    values.push(parseAmount(match[1], match[2]));
+while ((match = currencyRegex.exec(text)) !== null) {
+    const rawNumber = match[1];
+    if (!rawNumber) continue;
+    values.push(parseAmount(rawNumber, match[2]));
   }
 
   while ((match = bareMilRegex.exec(text)) !== null) {
-    const alreadyCaptured = values.some((v) => v === parseAmount(match![1], match![2]));
-    if (!alreadyCaptured) values.push(parseAmount(match[1], match[2]));
+    const rawNumber = match[1];
+    if (!rawNumber) continue;
+    const parsed = parseAmount(rawNumber, match[2]);
+    const alreadyCaptured = values.some((v) => v === parsed);
+    if (!alreadyCaptured) values.push(parsed);
   }
 
   return values;
