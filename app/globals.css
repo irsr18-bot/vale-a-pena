@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-line;
+  }
+  body {
+    font-feature-settings: "cv11", "ss01";
+  }
+  ::selection {
+    background-color: theme("colors.emerald.soft");
+    color: theme("colors.emerald.strong");
+  }
+  :focus-visible {
+    outline: 2px solid theme("colors.emerald.DEFAULT");
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
