@@ -40,3 +40,38 @@ export const rentVsBuyFormSchema = z.object({
   annualMaintenance: z.number().nonnegative(),
 });
 export type RentVsBuyFormValues = z.infer<typeof rentVsBuyFormSchema>;
+
+export const debtPayoffFormSchema = z.object({
+  outstandingBalance: z.number().positive(),
+  loanAnnualInterestRate: z.number().min(0).max(3),
+  remainingMonths: z.number().int().positive(),
+  availableAmount: z.number().positive(),
+  investmentAnnualRate: z.number().min(0).max(1),
+});
+export type DebtPayoffFormValues = z.infer<typeof debtPayoffFormSchema>;
+
+export const cashVsInstallmentsFormSchema = z.object({
+  price: z.number().positive(),
+  cashDiscountPercent: z.number().min(0).max(1),
+  installmentsCount: z.number().int().positive(),
+  installmentValue: z.number().positive(),
+  investmentAnnualRate: z.number().min(0).max(1),
+});
+export type CashVsInstallmentsFormValues = z.infer<typeof cashVsInstallmentsFormSchema>;
+
+export const carCostFormSchema = z.object({
+  vehiclePrice: z.number().positive(),
+  downPayment: z.number().nonnegative(),
+  financingAnnualRate: z.number().min(0).max(1),
+  financingTermMonths: z.number().int().positive(),
+  kmPerMonth: z.number().nonnegative(),
+  consumptionKmPerLiter: z.number().positive(),
+  fuelPricePerLiter: z.number().positive(),
+  annualIpva: z.number().nonnegative(),
+  annualInsurance: z.number().nonnegative(),
+  annualMaintenance: z.number().nonnegative(),
+  monthlyParking: z.number().nonnegative(),
+  monthlyToll: z.number().nonnegative(),
+  annualDepreciationRate: z.number().min(0).max(1),
+});
+export type CarCostFormValues = z.infer<typeof carCostFormSchema>;

@@ -25,14 +25,17 @@ const calculators: CalculatorCard[] = [
   {
     title: "Quitar empréstimo ou investir?",
     description: "Descubra se vale mais a pena antecipar uma dívida ou aplicar o dinheiro.",
+    href: "/quitar-divida",
   },
   {
     title: "Comprar à vista ou parcelado?",
     description: "Compare o custo de pagar tudo agora com parcelar e investir o restante.",
+    href: "/comprar-a-vista-ou-parcelado",
   },
   {
     title: "Custo real de um carro",
     description: "Combustível, IPVA, seguro, manutenção e depreciação — o que o carro custa por mês.",
+    href: "/custo-carro",
   },
 ];
 

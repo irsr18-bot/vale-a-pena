@@ -1,6 +1,9 @@
 import type { CarPurchaseComparison } from "@/lib/financial-engine/scenarios";
 import type { LoanResult } from "@/lib/financial-engine/types";
 import type { RentVsBuyResult } from "@/lib/financial-engine/rentVsBuy";
+import type { DebtPayoffResult } from "@/lib/financial-engine/debtPayoff";
+import type { CashVsInstallmentsResult } from "@/lib/financial-engine/cashVsInstallments";
+import type { CarComparisonResult, CarCostResult } from "@/lib/financial-engine/carCost";
 import { formatBRL, formatPercent } from "@/lib/format";
 
 /**
@@ -81,4 +84,54 @@ export function explainRentVsBuy(result: RentVsBuyResult): string {
     "O resultado é bastante sensível à taxa de valorização do imóvel e ao retorno do investimento usados na simulação — pequenas mudanças nessas taxas podem inverter o resultado. Ajuste os valores para refletir sua realidade.";
 
   return [intro, shortTerm, costNote, caveat].join(" ");
+}
+
+/** Explicação em texto para quitar dívida x investir. */
+export function explainDebtPayoffVsInvest(result: DebtPayoffResult): string {
+  const favorsPayoff = result.recommendation === "payoff";
+  const intro = favorsPayoff
+    ? `Quitar ${formatBRL(result.payoffAmountUsed)} da dívida evita ${formatBRL(result.interestSaved)} em juros — um ganho garantido, já que essa taxa está contratada.`
+    : `Investir ${formatBRL(result.payoffAmountUsed)} em vez de quitar a dívida projeta um ganho de ${formatBRL(result.investmentGain)} no período — maior que os ${formatBRL(result.interestSaved)} que seriam economizados quitando.`;
+
+  const comparison = `Em números: quitar evita ${formatBRL(result.interestSaved)} de juros (ganho certo), enquanto investir renderia cerca de ${formatBRL(result.investmentGain)} (ganho esperado, sujeito a variação de mercado).`;
+
+  const caveat = favorsPayoff
+    ? "Vale lembrar: o ganho de quitar é garantido, enquanto o retorno de investir depende do mercado — para a dívida compensar menos, o investimento precisaria performar bem acima do estimado aqui."
+    : "Vale lembrar: o retorno do investimento não é garantido como o juro evitado ao quitar a dívida — essa diferença de risco importa na decisão, não só o número final.";
+
+  return [intro, comparison, caveat].join(" ");
+}
+
+/** Explicação em texto para comprar à vista x parcelado. */
+export function explainCashVsInstallments(result: CashVsInstallmentsResult): string {
+  const favorsInstallments = result.recommendation === "installments";
+  const intro = favorsInstallments
+    ? `Parcelar sai mais vantajoso: o valor presente das parcelas (${formatBRL(result.presentValueOfInstallments)}) é menor que o preço à vista (${formatBRL(result.cashPrice)}), uma diferença de ${formatBRL(result.difference)} a favor de parcelar — considerando que o dinheiro renderia investido nesse meio-tempo.`
+    : `Pagar à vista sai mais vantajoso: o preço com desconto (${formatBRL(result.cashPrice)}) é menor que o valor presente das parcelas (${formatBRL(result.presentValueOfInstallments)}), uma diferença de ${formatBRL(result.difference)} a favor de pagar à vista.`;
+
+  const caveat =
+    "Essa comparação assume que, ao parcelar, o dinheiro que sobra fica investido rendendo a taxa informada — se esse não for o seu caso na prática, o resultado pode não se aplicar.";
+
+  return [intro, caveat].join(" ");
+}
+
+/** Explicação em texto para o custo real de um carro (ou comparação entre dois). */
+export function explainCarCost(result: CarCostResult): string {
+  const parts = [
+    `O custo mensal real deste carro, somando parcela, combustível, custos fixos e depreciação, é de aproximadamente ${formatBRL(result.totalMonthlyCost)} — o equivalente a ${formatBRL(result.costPerKm)} por km rodado.`,
+    `Em 5 anos, isso soma cerca de ${formatBRL(result.totalCostFiveYears)}, sem contar reajustes de preços ao longo do tempo.`,
+    "A depreciação costuma ser o item mais subestimado nesse tipo de conta — vale revisar a taxa anual usada se ela não refletir bem o modelo do carro.",
+  ];
+  return parts.join(" ");
+}
+
+/** Explicação em texto para a comparação entre dois carros. */
+export function explainCarComparison(result: CarComparisonResult): string {
+  const cheaper = result.cheaperMonthly === "a" ? result.a : result.b;
+  const pricier = result.cheaperMonthly === "a" ? result.b : result.a;
+  const parts = [
+    `"${cheaper.label}" tem o menor custo mensal real: ${formatBRL(cheaper.totalMonthlyCost)}, contra ${formatBRL(pricier.totalMonthlyCost)} de "${pricier.label}" — uma diferença de ${formatBRL(result.monthlyDifference)} por mês.`,
+    `Em 5 anos, essa diferença mensal se acumula em aproximadamente ${formatBRL(result.monthlyDifference * 60)}.`,
+  ];
+  return parts.join(" ");
 }
