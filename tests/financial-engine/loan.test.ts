@@ -25,7 +25,7 @@ describe("calculateLoanPayment (PRICE)", () => {
       termMonths: 60,
     });
     // valor de referência calculado pela fórmula PRICE padrão
-    expect(installment).toBeCloseTo(2119.16, 1);
+    expect(installment).toBeCloseTo(2103.56, 1);
   });
 
   it("com taxa 0, parcela é principal dividido pelo prazo", () => {

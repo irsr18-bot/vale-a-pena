@@ -75,7 +75,7 @@ function extractCurrencyValues(text: string): number[] {
 
   let match: RegExpExecArray | null;
 
-while ((match = currencyRegex.exec(text)) !== null) {
+  while ((match = currencyRegex.exec(text)) !== null) {
     const rawNumber = match[1];
     if (!rawNumber) continue;
     values.push(parseAmount(rawNumber, match[2]));

@@ -10,6 +10,7 @@ const calculators: CalculatorCard[] = [
   {
     title: "Financiar ou continuar alugando?",
     description: "Compare comprar um imóvel financiado com continuar alugando e investir a diferença.",
+    href: "/comprar-ou-alugar",
   },
   {
     title: "Comprar carro: à vista, financiar ou investir?",

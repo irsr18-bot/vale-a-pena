@@ -1,5 +1,6 @@
 import type { CarPurchaseComparison } from "@/lib/financial-engine/scenarios";
 import type { LoanResult } from "@/lib/financial-engine/types";
+import type { RentVsBuyResult } from "@/lib/financial-engine/rentVsBuy";
 import { formatBRL, formatPercent } from "@/lib/format";
 
 /**
@@ -55,4 +56,29 @@ export function explainLoanResult(result: LoanResult, principal: number): string
     "Esta é uma simulação baseada na taxa informada — confirme as condições exatas com a instituição financeira antes de decidir.",
   ];
   return parts.join(" ");
+}
+
+/**
+ * Explicação em texto para o comparador comprar × alugar. Mesma lógica:
+ * os números já vêm prontos do financial-engine, a função só narra.
+ */
+export function explainRentVsBuy(result: RentVsBuyResult): string {
+  const year30 = result.timeline.find((p) => p.year === 30)!;
+  const year10 = result.timeline.find((p) => p.year === 10)!;
+  const favorsBuy = result.favoredScenarioAtYear30 === "buy";
+
+  const intro = favorsBuy
+    ? `Em 30 anos, comprar o imóvel projeta um patrimônio de ${formatBRL(year30.buyNetWorth)}, contra ${formatBRL(year30.rentNetWorth)} alugando e investindo a diferença — a compra sai na frente nesse horizonte.`
+    : `Em 30 anos, alugar e investir a diferença projeta um patrimônio de ${formatBRL(year30.rentNetWorth)}, contra ${formatBRL(year30.buyNetWorth)} comprando o imóvel — alugar sai na frente nesse horizonte, considerando as taxas informadas.`;
+
+  const shortTerm = `Em 10 anos, a diferença já é ${
+    year10.buyNetWorth >= year10.rentNetWorth ? "favorável à compra" : "favorável ao aluguel"
+  }: ${formatBRL(year10.buyNetWorth)} comprando contra ${formatBRL(year10.rentNetWorth)} alugando.`;
+
+  const costNote = `O custo mensal de possuir o imóvel hoje (parcela + condomínio + IPTU + seguro + manutenção) é de aproximadamente ${formatBRL(result.buyMonthlyCost)}, contra ${formatBRL(result.rentMonthlyCost)} de aluguel informado.`;
+
+  const caveat =
+    "O resultado é bastante sensível à taxa de valorização do imóvel e ao retorno do investimento usados na simulação — pequenas mudanças nessas taxas podem inverter o resultado. Ajuste os valores para refletir sua realidade.";
+
+  return [intro, shortTerm, costNote, caveat].join(" ");
 }

@@ -23,3 +23,20 @@ export const carPurchaseFormSchema = z.object({
   investmentAnnualRate: z.number().min(0).max(1),
 });
 export type CarPurchaseFormValues = z.infer<typeof carPurchaseFormSchema>;
+
+export const rentVsBuyFormSchema = z.object({
+  propertyPrice: z.number().positive(),
+  downPayment: z.number().nonnegative(),
+  financingAnnualRate: z.number().min(0).max(1),
+  financingTermMonths: z.number().int().positive(),
+  purchaseCosts: z.number().nonnegative(),
+  currentRent: z.number().positive(),
+  annualRentAdjustment: z.number().min(0).max(1),
+  annualPropertyAppreciation: z.number().min(-0.5).max(1),
+  investmentAnnualRate: z.number().min(0).max(1),
+  monthlyCondoFee: z.number().nonnegative(),
+  annualIptu: z.number().nonnegative(),
+  annualInsurance: z.number().nonnegative(),
+  annualMaintenance: z.number().nonnegative(),
+});
+export type RentVsBuyFormValues = z.infer<typeof rentVsBuyFormSchema>;
