@@ -1,0 +1,4 @@
+import type { MetadataRoute } from "next"; 
+const baseUrl = "https://vale-a-pena-ten.vercel.app"; 
+export default function sitemap(): MetadataRoute.Sitemap { const routes = [ "", "/financiamento", "/comprar-ou-alugar", "/quitar-divida", "/comprar-a-vista-ou-parcelado", "/custo-carro", ]; 
+return routes.map((route) => ({ url: `${baseUrl}${route}`, lastModified: new Date(), changeFrequency: "weekly", priority: route === "" ? 1 : 0.8, })); }
